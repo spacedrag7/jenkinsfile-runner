@@ -12,6 +12,11 @@ import picocli.AutoComplete;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Main entry point for the Jenkinsfile Runner execution.
  *
@@ -83,4 +88,42 @@ public class Bootstrap implements Callable<Integer> {
         command.pipelineRunOptions = pipelineRunOptions;
         return command.call();
     }
+    public String[] mergeConfigWithArgs(String[] originalArgs) throws IOException {
+                ObjectMapper mapper = new ObjectMapper();
+                Config config = mapper.readValue(configFIle, Config.class);
+
+                List<String> newArgs = new ArrayList<>();
+
+                //Default command
+                newArgs.add("run");
+
+                if (config.pluginsDir != null) {
+                        newArgs.add("-p");
+                        newArgs.add(config.pluginsDir);
+                }
+
+                if (config.war != null) {
+                        newArgs.add("-w");
+                        newArgs.add(config.war);
+                }
+
+                if (config.jenkinsfile != null) {
+                        newArgs.add("-f");
+                        newArgs.add(config.jenkinsfile);
+                }
+
+                if (config.runWorkspace != null) {
+                        newArgs.add("--runWorkspace");
+                        newArgs.add(config.runWorkspace);
+                }
+
+                for (String arg : originalArgs) {
+                        if (!arg.equals("--config")){
+                                newArgs.add(arg);
+                        }
+                }
+
+                return newArgs.toArray(new String[0]);
+    }
+                
 }

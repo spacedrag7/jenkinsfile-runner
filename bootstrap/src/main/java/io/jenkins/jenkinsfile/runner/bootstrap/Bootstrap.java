@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 /**
  * Main entry point for the Jenkinsfile Runner execution.
@@ -57,7 +58,7 @@ public class Bootstrap implements Callable<Integer> {
         cmd.parseArgs(args);
 
         //modifying agrs if config exists
-        if (bootstrap.configFIle != null) {
+        if (bootstrap.configFile != null) {
                 args = bootstrap.mergeConfigWithArgs(args);
         }
 
@@ -90,7 +91,7 @@ public class Bootstrap implements Callable<Integer> {
     }
     public String[] mergeConfigWithArgs(String[] originalArgs) throws IOException {
                 ObjectMapper mapper = new ObjectMapper();
-                Config config = mapper.readValue(configFIle, Config.class);
+                Config config = mapper.readValue(configFile, Config.class);
 
                 List<String> newArgs = new ArrayList<>();
 
@@ -117,13 +118,13 @@ public class Bootstrap implements Callable<Integer> {
                         newArgs.add(config.runWorkspace);
                 }
 
-                for (String arg : originalArgs) {
-                        if (!arg.equals("--config")){
-                                newArgs.add(arg);
+                for (int i = 0; i < originalArgs.length; i++) {
+                        if (originalArgs[i].equals("--config")) {
+                                i++;
+                                continue;
                         }
+                        newArgs.add(originalArgs[i]);
                 }
-
                 return newArgs.toArray(new String[0]);
-    }
-                
+    }         
 }

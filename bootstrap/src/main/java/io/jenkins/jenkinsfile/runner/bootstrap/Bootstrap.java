@@ -29,6 +29,9 @@ public class Bootstrap implements Callable<Integer> {
     @CommandLine.Mixin
     public JenkinsLauncherOptions launcherOptions;
 
+    @CommandLine.Option(names = "--config", description = "Path to config file") //config file to start jenkins #595
+    public File configFile;
+
     /**
      * @deprecated Replaced by {@link RunCLICommand}
      */
@@ -41,6 +44,16 @@ public class Bootstrap implements Callable<Integer> {
         // break for attaching profiler
         if (Boolean.getBoolean("start.pause")) {
             System.console().readLine();
+        }
+            
+        //parse to detect --config
+        Bootstrap bootstrap = new Bootstrap();
+        CommandLine cmd = new CommandLine(bootstrap);
+        cmd.parseArgs(args);
+
+        //modifying agrs if config exists
+        if (bootstrap.configFIle != null) {
+                args = bootstrap.mergeConfigWithArgs(args);
         }
 
         int exitCode = new CommandLine(new Bootstrap()).execute(args);

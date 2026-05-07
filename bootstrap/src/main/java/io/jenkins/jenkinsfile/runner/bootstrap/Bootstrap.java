@@ -35,8 +35,6 @@ public class Bootstrap implements Callable<Integer> {
     @CommandLine.Mixin
     public JenkinsLauncherOptions launcherOptions;
 
-    @CommandLine.Option(names = "--config", description = "Path to config file") //config file to start jenkins #595
-    public File configFile;
 
     /**
      * @deprecated Replaced by {@link RunCLICommand}

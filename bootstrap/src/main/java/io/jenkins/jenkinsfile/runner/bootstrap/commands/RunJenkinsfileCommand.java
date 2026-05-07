@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import picocli.CommandLine;
 
+import java.io.File;
+
 /**
  * @author Oleg Nenashev
  * @since TODO
@@ -14,6 +16,9 @@ public class RunJenkinsfileCommand extends JenkinsfileCommand {
 
     @CommandLine.Mixin
     public PipelineRunOptions pipelineRunOptions;
+
+    @CommandLine.Option(names = "--config", description = "Path to config file") //config file to start jenkins 
+    public File configFile;
 
     private static final String WORKSPACES_DIR_SYSTEM_PROPERTY = "jenkins.model.Jenkins.workspacesDir";
 

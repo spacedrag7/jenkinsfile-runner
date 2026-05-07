@@ -45,6 +45,7 @@ public class Bootstrap implements Callable<Integer> {
     public boolean cliMode;
 
     public static void main(String[] args) throws Throwable {
+            System.out.println("MY CONFIG FEATURE IS RUNNING");
         // break for attaching profiler
         if (Boolean.getBoolean("start.pause")) {
             System.console().readLine();
